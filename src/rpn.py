@@ -1,25 +1,38 @@
-
+from collections import deque
 
 def eval_rpn(tokens):
-    stack = []
-    operators = {"+", "-", "*", "/"}
-    
+    """
+    Evaluates an expression in Reverse Polish Notation (RPN).
+
+    Args:
+        tokens: A list of strings representing the RPN expression.
+                Numbers are represented as strings, and operators are
+                represented as '+', '-', '*', or '/'.
+
+    Returns:
+        The integer result of the evaluation.
+    """
+    stack = deque()
+
     for token in tokens:
-        if token not in operators:
-            # token is a number, push it as int
+        if token.isdigit() or (token.startswith('-') and token[1:].isdigit()):
+            # If the token is a number (including negative numbers),
+            # push it onto the stack.
             stack.append(int(token))
         else:
-            # token is an operator; pop two operands
-            b = stack.pop()
-            a = stack.pop()
-            if token == "+":
-                stack.append(a + b)
-            elif token == "-":
-                stack.append(a - b)
-            elif token == "*":
-                stack.append(a * b)
-            else:  # token == "/"
-                # integer division that truncates toward zero
-                stack.append(int(a / b))
-    
+            # If the token is an operator, pop the top two operands,
+            # perform the operation, and push the result back onto the stack.
+            operand2 = stack.pop()
+            operand1 = stack.pop()
+            
+            if token == '+':
+                stack.append(operand1 + operand2)
+            elif token == '-':
+                stack.append(operand1 - operand2)
+            elif token == '*':
+                stack.append(operand1 * operand2)
+            elif token == '/':
+               
+                stack.append(int(operand1 / operand2))
+
     return stack.pop()
